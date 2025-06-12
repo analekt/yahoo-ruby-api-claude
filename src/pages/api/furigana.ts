@@ -8,6 +8,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // CORSヘッダーを設定
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // OPTIONSリクエストに対応
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   // POSTリクエストのみ許可
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -40,21 +50,28 @@ export default async function handler(
       
       console.log('Yahoo API request payload:', JSON.stringify(yahooRequestData).substring(0, 100) + '...');
       
-      const response = await axios.post<FuriganaResponse | FuriganaErrorResponse>(
-        API_URL,
-        yahooRequestData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': `Yahoo AppID: ${clientId}`,
-          },
-          timeout: 10000, // 10秒タイムアウト
-        }
-      );
+      // fetch APIを使用
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': `Yahoo AppID: ${clientId}`,
+        },
+        body: JSON.stringify(yahooRequestData),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Yahoo API error: ${response.status} ${response.statusText}`, errorText);
+        return res.status(response.status).json({
+          error: `Yahoo API Error: ${response.status} ${response.statusText}`,
+          details: errorText
+        });
+      }
+      
+      const data = await response.json();
 
       console.log('Yahoo API response status:', response.status);
-      
-      const data = response.data;
       
       // エラーレスポンスの場合
       if ('error' in data) {
@@ -78,7 +95,8 @@ export default async function handler(
         details: {
           status: apiError.response?.status,
           data: apiError.response?.data,
-          headers: apiError.response?.headers,
+          message: apiError.message,
+          stack: process.env.NODE_ENV === 'development' ? apiError.stack : undefined
         }
       });
     }
@@ -88,6 +106,7 @@ export default async function handler(
     // エラーレスポンスを返す
     return res.status(500).json({ 
       error: error.message || 'Internal Server Error',
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 } 

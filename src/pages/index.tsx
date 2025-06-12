@@ -231,6 +231,44 @@ export default function Home() {
     }
   };
 
+  // コンポーネントマウント時に古いキャッシュをクリア
+  useEffect(() => {
+    // 開発モードでのみコンソールにバージョン情報を出力
+    if (process.env.NODE_ENV === 'development') {
+      console.log('App version:', new Date().toISOString());
+      console.log('Environment:', process.env.NODE_ENV);
+    }
+    
+    // ServiceWorkerの登録を確認
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        console.log('Service workers:', registrations.length);
+        
+        // 必要に応じてServiceWorkerを登録解除
+        for (const registration of registrations) {
+          registration.unregister().then(success => {
+            if (success) console.log('Service worker unregistered');
+          });
+        }
+      });
+    }
+
+    // キャッシュをクリア
+    if ('caches' in window) {
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          console.log('Clearing cache:', cacheName);
+          caches.delete(cacheName);
+        });
+      });
+    }
+  }, []);
+
+  // ページをリロードする関数
+  const reloadPage = () => {
+    window.location.reload();
+  };
+
   return (
     <>
       <Head>
@@ -244,6 +282,16 @@ export default function Home() {
         <header className="py-6">
           <h1 className="text-3xl font-bold text-center mb-2">Yahoo! ルビ振りAPI</h1>
           <p className="text-center text-gray-600">漢字かな交じり文に、ふりがな（ルビ）を付けます。</p>
+          
+          {/* リロードボタンを追加 */}
+          <div className="text-center mt-2">
+            <button
+              onClick={reloadPage}
+              className="text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              キャッシュをクリアして再読み込み
+            </button>
+          </div>
         </header>
 
         <main>
@@ -425,6 +473,15 @@ export default function Home() {
           {/* デバッグ情報エリア */}
           <div className="card mt-6 bg-gray-100">
             <h3 className="text-lg font-semibold mb-2">デバッグ情報</h3>
+            
+            <div className="mb-4">
+              <h4 className="font-medium">環境情報:</h4>
+              <ul className="list-disc pl-5 text-sm">
+                <li>環境: {process.env.NODE_ENV}</li>
+                <li>ビルド時刻: {new Date().toISOString()}</li>
+                <li>URL: {typeof window !== 'undefined' ? window.location.href : ''}</li>
+              </ul>
+            </div>
             
             <div className="mb-4">
               <h4 className="font-medium">処理ステップ:</h4>
