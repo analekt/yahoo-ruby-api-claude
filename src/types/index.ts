@@ -34,7 +34,7 @@ export interface FuriganaErrorResponse {
 // アプリケーション状態の型定義
 export type RubyStyle = '墨つき括弧' | 'XHTML';
 export type GradeLevel = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8';
-export type Status = 'idle' | 'loading' | 'success' | 'error';
+export type StatusType = 'idle' | 'loading' | 'success' | 'error';
 
 export interface AppState {
   clientId: string;
@@ -47,7 +47,7 @@ export interface AppState {
   saveClientId: boolean;
   debugInfo: string;
   showDebug: boolean;
-  status: Status;
+  status: StatusType;
   error: string | null;
 }
 

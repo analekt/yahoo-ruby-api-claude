@@ -282,7 +282,7 @@ export default function Home() {
                           className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                           aria-label="ルビのスタイルの選択"
                         >
-                          <option value="墨つき括弧">墨つき括弧 (例: 漢字《かんじ》 字)</option>
+                          <option value="墨つき括弧">墨つき括弧 (例: 漢字【かん】字)</option>
                           <option value="XHTML">XHTML (例: &lt;ruby&gt;漢字&lt;rt&gt;かんじ&lt;/rt&gt;&lt;/ruby&gt;)</option>
                         </select>
                       </div>

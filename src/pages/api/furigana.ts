@@ -11,6 +11,11 @@ type ApiResponse = {
   error?: string;
   status?: number;
   details?: string;
+  message?: string;
+  timestamp?: string;
+  version?: string;
+  query?: any;
+  headers?: any;
 };
 
 export default async function handler(
@@ -19,8 +24,21 @@ export default async function handler(
 ) {
   console.log('API route handler called: /api/furigana');
   
-  // CORSヘッダーを設定
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORSヘッダーを設定 - '*'ではなく具体的なオリジンを設定
+  const origin = req.headers.origin || '';
+  const allowedOrigins = [
+    'https://yahoo-ruby-api-claude.vercel.app',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+  ];
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    // 開発環境用にワイルドカードを許可
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -35,11 +53,14 @@ export default async function handler(
   if (req.method === 'GET') {
     // テスト用のシンプルなレスポンス
     res.status(200).json({
-      status: 'ok',
+      status: 200,
       message: 'Yahoo Furigana API endpoint is working',
       timestamp: new Date().toISOString(),
-      version: '1.0.1',
-      query: req.query
+      version: '1.0.2', // バージョン更新
+      query: req.query,
+      headers: {
+        origin: req.headers.origin || 'no-origin'
+      }
     });
     return;
   }
@@ -53,7 +74,7 @@ export default async function handler(
   
   try {
     // リクエストボディからデータを取得
-    const { text, clientId, grade = "1" } = req.body;
+    const { text, clientId, grade = "1" as GradeLevel } = req.body;
     
     // キャッシュを無効化するヘッダーを設定
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -74,6 +95,9 @@ export default async function handler(
       return;
     }
     
+    // GradeLevelから数値に変換
+    const gradeNumber = parseInt(grade, 10);
+    
     // リクエストデータ
     const requestData = {
       id: '1234-1',
@@ -81,7 +105,7 @@ export default async function handler(
       method: 'jlp.furiganaservice.furigana',
       params: {
         q: text,
-        grade: typeof grade === 'string' ? parseInt(grade, 10) : grade,
+        grade: gradeNumber,
       },
     };
     
