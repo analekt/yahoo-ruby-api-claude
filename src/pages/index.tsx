@@ -5,6 +5,23 @@ import { GradeLevel, RubyStyle } from '@/types';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// APIエンドポイントの完全なURLを取得する関数
+function getApiUrl(path: string): string {
+  // ブラウザ環境でなければ相対パスを返す
+  if (typeof window === 'undefined') {
+    return path;
+  }
+  
+  // 現在のURL情報から基本URLを取得
+  const baseUrl = window.location.origin;
+  
+  // パスが /api で始まっていない場合は追加
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const apiPath = normalizedPath.startsWith('/api') ? normalizedPath : `/api${normalizedPath}`;
+  
+  return `${baseUrl}${apiPath}`;
+}
+
 export default function Home() {
   // 設定と状態の管理
   const [clientId, setClientId] = useState<string>('');
@@ -136,7 +153,10 @@ export default function Home() {
     try {
       addDebugInfo('API接続テスト開始');
       
-      const response = await fetch('/api/furigana', {
+      const apiPath = getApiUrl('/api/furigana');
+      addDebugInfo(`API接続テスト: ${apiPath}`);
+      
+      const response = await fetch(apiPath, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

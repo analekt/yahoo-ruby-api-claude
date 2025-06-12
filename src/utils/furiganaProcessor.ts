@@ -6,6 +6,23 @@ import {
 } from './furiganaApi';
 import { FuriganaResponse, GradeLevel, RubyStyle, Word } from '@/types';
 
+// APIエンドポイントの完全なURLを取得する関数
+function getApiUrl(path: string): string {
+  // ブラウザ環境でなければ相対パスを返す
+  if (typeof window === 'undefined') {
+    return path;
+  }
+  
+  // 現在のURL情報から基本URLを取得
+  const baseUrl = window.location.origin;
+  
+  // パスが /api で始まっていない場合は追加
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const apiPath = normalizedPath.startsWith('/api') ? normalizedPath : `/api${normalizedPath}`;
+  
+  return `${baseUrl}${apiPath}`;
+}
+
 // APIアクセスを監視するフラグ
 const DEBUG_API_CALLS = true;
 
@@ -106,7 +123,11 @@ export class FuriganaProcessor {
       let testResult = null;
       try {
         console.log('Testing API with simple request...');
-        const response = await fetch('/api/furigana', {
+        // 相対パスを使用してサーバーサイドエンドポイントにアクセス
+        const apiPath = getApiUrl('/api/furigana');
+        console.log(`Using API path: ${apiPath}`);
+        
+        const response = await fetch(apiPath, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
