@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { FuriganaResponse, FuriganaErrorResponse, GradeLevel } from '@/types';
 
-const API_URL = 'https://jlp.yahooapis.jp/FuriganaService/V2/furigana';
-
 // テキストを4KB以内のチャンクに分割する関数
 export const splitTextIntoChunks = (text: string): string[] => {
   const MAX_CHUNK_SIZE = 4000; // 4KBより少し小さくする
@@ -72,29 +70,19 @@ export const splitTextIntoChunks = (text: string): string[] => {
   return chunks;
 };
 
-// APIリクエストを送信する関数
+// APIリクエストを送信する関数（サーバーサイドAPIを経由）
 export const requestFurigana = async (
   text: string,
   clientId: string,
   grade: GradeLevel
 ): Promise<FuriganaResponse> => {
   try {
-    const response = await axios.post<FuriganaResponse | FuriganaErrorResponse>(
-      API_URL,
+    const response = await axios.post<FuriganaResponse | { error: string }>(
+      '/api/furigana',
       {
-        id: Date.now().toString(),
-        jsonrpc: '2.0',
-        method: 'jlp.furiganaservice.furigana',
-        params: {
-          q: text,
-          grade
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'Yahoo AppID: ' + clientId,
-        }
+        text,
+        clientId,
+        grade
       }
     );
 
@@ -102,14 +90,14 @@ export const requestFurigana = async (
     
     // エラーレスポンスの場合
     if ('error' in data) {
-      const errorResponse = data as FuriganaErrorResponse;
-      throw new Error(`API Error: ${errorResponse.error.message} (Code: ${errorResponse.error.code})`);
+      throw new Error(`API Error: ${data.error}`);
     }
     
     return data as FuriganaResponse;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      throw new Error(`Network Error: ${error.message}`);
+      const errorMessage = error.response?.data?.error || error.message;
+      throw new Error(`Network Error: ${errorMessage}`);
     }
     throw error;
   }

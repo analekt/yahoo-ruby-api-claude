@@ -34,6 +34,15 @@ export default function Home() {
     status: 'idle' as Status,
     error: null,
   });
+  
+  // デバッグ情報
+  const [debug, setDebug] = useState<{
+    apiResponse: any | null;
+    processingSteps: string[];
+  }>({
+    apiResponse: null,
+    processingSteps: [],
+  });
 
   // LocalStorageからClientIDを読み込む
   useEffect(() => {
@@ -81,6 +90,12 @@ export default function Home() {
 
   // ルビ振り処理
   const processText = async () => {
+    // デバッグ情報をリセット
+    setDebug({
+      apiResponse: null,
+      processingSteps: ['処理開始...'],
+    });
+    
     // 入力チェック
     if (!state.input.trim()) {
       setState((prev: AppState) => ({ ...prev, error: '入力テキストが必要です。', status: 'error' }));
@@ -99,6 +114,40 @@ export default function Home() {
       // ClientIDを保存
       saveClientId();
       
+      setDebug(prev => ({
+        ...prev,
+        processingSteps: [...prev.processingSteps, 'Client ID保存完了']
+      }));
+      
+      // API動作確認のためのシンプルなテスト
+      try {
+        const testResponse = await fetch('/api/furigana', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: '漢字',
+            clientId: state.clientId,
+            grade: state.grade
+          })
+        });
+        
+        const testData = await testResponse.json();
+        
+        setDebug(prev => ({
+          ...prev,
+          apiResponse: testData,
+          processingSteps: [...prev.processingSteps, 'API接続テスト完了', 
+                            `APIレスポンス: ${JSON.stringify(testData).substring(0, 200)}...`]
+        }));
+      } catch (testError: any) {
+        setDebug(prev => ({
+          ...prev,
+          processingSteps: [...prev.processingSteps, `API接続テスト失敗: ${testError.message || '不明なエラー'}`]
+        }));
+      }
+      
       // FuriganaProcessorのインスタンスを作成
       const processor = new FuriganaProcessor(
         state.clientId,
@@ -107,8 +156,23 @@ export default function Home() {
         state.rubyStyle
       );
       
+      setDebug(prev => ({
+        ...prev,
+        processingSteps: [...prev.processingSteps, 'FuriganaProcessorインスタンス作成完了']
+      }));
+      
       // テキスト処理
+      setDebug(prev => ({
+        ...prev,
+        processingSteps: [...prev.processingSteps, 'テキスト処理開始...']
+      }));
+      
       const result = await processor.process(state.input);
+      
+      setDebug(prev => ({
+        ...prev,
+        processingSteps: [...prev.processingSteps, 'テキスト処理完了', `結果長: ${result.length}文字`]
+      }));
       
       // 結果を設定
       setState((prev: AppState) => ({ 
@@ -119,6 +183,12 @@ export default function Home() {
       }));
     } catch (error: any) {
       console.error('Processing error:', error);
+      
+      setDebug(prev => ({
+        ...prev,
+        processingSteps: [...prev.processingSteps, `エラー発生: ${error.message || '不明なエラー'}`]
+      }));
+      
       setState((prev: AppState) => ({ 
         ...prev, 
         status: 'error', 
@@ -351,6 +421,29 @@ export default function Home() {
               </button>
             </div>
           )}
+          
+          {/* デバッグ情報エリア */}
+          <div className="card mt-6 bg-gray-100">
+            <h3 className="text-lg font-semibold mb-2">デバッグ情報</h3>
+            
+            <div className="mb-4">
+              <h4 className="font-medium">処理ステップ:</h4>
+              <ul className="list-disc pl-5 text-sm">
+                {debug.processingSteps.map((step, index) => (
+                  <li key={index} className="mb-1">{step}</li>
+                ))}
+              </ul>
+            </div>
+            
+            {debug.apiResponse && (
+              <div>
+                <h4 className="font-medium">APIレスポンス:</h4>
+                <pre className="text-xs bg-gray-200 p-2 rounded overflow-auto max-h-40">
+                  {JSON.stringify(debug.apiResponse, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
         </main>
         
         <footer className="py-6 text-center text-gray-500 text-sm">
