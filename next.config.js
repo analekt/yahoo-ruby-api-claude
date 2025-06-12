@@ -2,13 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // サーバーサイドコンポーネントはこのプロジェクトでは使用していないため、無効化
-  experimental: {
-    appDir: false,
-  },
-  // 本番環境のみの設定
+  // 本番環境のみの設定があれば、NODE_ENV以外の環境変数をここに追加
   env: {
-    NODE_ENV: process.env.NODE_ENV,
+    // NODE_ENV は Next.js が自動的に設定するため、ここで設定する必要はありません
   },
 }
 
