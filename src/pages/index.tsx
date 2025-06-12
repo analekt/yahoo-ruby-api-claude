@@ -261,13 +261,13 @@ export default function Home() {
                           className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                           aria-label="ルビを付与する基準の選択"
                         >
-                          <option value="1">小学1年生向け。漢字にふりがなを付けます。</option>
-                          <option value="2">小学2年生向け。漢字にふりがなを付けます。</option>
-                          <option value="3">小学3年生向け。漢字にふりがなを付けます。</option>
-                          <option value="4">小学4年生向け。漢字にふりがなを付けます。</option>
-                          <option value="5">小学5年生向け。漢字にふりがなを付けます。</option>
-                          <option value="6">小学6年生向け。漢字にふりがなを付けます。</option>
-                          <option value="7">中学生向け。漢字にふりがなを付けます。</option>
+                          <option value="1">小学1年生向け。漢字（JIS X 0208が定める漢字）にふりがなを付けます。</option>
+                          <option value="2">小学2年生向け。1年生で習う漢字にはふりがなを付けません。</option>
+                          <option value="3">小学3年生向け。1～2年生で習う漢字にはふりがを付けません。</option>
+                          <option value="4">小学4年生向け。1～3年生で習う漢字にはふりがなを付けません。</option>
+                          <option value="5">小学5年生向け。1～4年生で習う漢字にはふりがなを付けません。</option>
+                          <option value="6">小学6年生向け。1～5年生で習う漢字にはふりがなを付けません。</option>
+                          <option value="7">中学生以上向け。小学校で習う漢字にはふりがなを付けません。</option>
                           <option value="8">一般向け。常用漢字にはふりがなを付けません。</option>
                         </select>
                       </div>
