@@ -268,7 +268,7 @@ export default function Home() {
                           <option value="5">小学5年生向け。漢字にふりがなを付けます。</option>
                           <option value="6">小学6年生向け。漢字にふりがなを付けます。</option>
                           <option value="7">中学生向け。漢字にふりがなを付けます。</option>
-                          <option value="8">一般向け。常用漢字にふりがなを付けます。</option>
+                          <option value="8">一般向け。常用漢字にはふりがなを付けません。</option>
                         </select>
                       </div>
                       
@@ -404,7 +404,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="text-center text-gray-500 text-sm mt-8">
-          <p>Yahoo!デベロッパーネットワークのルビ振りAPIを使用しています</p>
+          <p>Yahoo!デベロッパーネットワークのルビ振りAPIを使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
         </footer>
       </div>
       <ToastContainer position="bottom-right" />
