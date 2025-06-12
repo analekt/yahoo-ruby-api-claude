@@ -108,7 +108,12 @@ export class FuriganaProcessor {
         console.log('Testing API with simple request...');
         const response = await fetch('/api/furigana', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          },
           body: JSON.stringify({
             text: '漢字',
             clientId: this.clientId,

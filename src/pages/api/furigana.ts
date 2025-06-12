@@ -21,12 +21,26 @@ export default async function handler(
   
   // CORSヘッダーを設定
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   
   // OPTIONSリクエストはここで終了
   if (req.method === 'OPTIONS') {
     res.status(200).end();
+    return;
+  }
+  
+  // GETリクエストの処理（テスト用）
+  if (req.method === 'GET') {
+    // テスト用のシンプルなレスポンス
+    res.status(200).json({
+      status: 'ok',
+      message: 'Yahoo Furigana API endpoint is working',
+      timestamp: new Date().toISOString(),
+      version: '1.0.1',
+      query: req.query
+    });
     return;
   }
   
@@ -67,7 +81,7 @@ export default async function handler(
       method: 'jlp.furiganaservice.furigana',
       params: {
         q: text,
-        grade: parseInt(grade, 10),
+        grade: typeof grade === 'string' ? parseInt(grade, 10) : grade,
       },
     };
     

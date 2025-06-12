@@ -138,7 +138,12 @@ export default function Home() {
       
       const response = await fetch('/api/furigana', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
         body: JSON.stringify({
           text: '漢字',
           clientId,
@@ -313,9 +318,44 @@ export default function Home() {
                   {showDebug && (
                     <div className="mb-4 p-4 bg-gray-100 rounded-md">
                       <h3 className="text-lg font-medium text-gray-900 mb-2">デバッグ情報</h3>
-                      <pre className="whitespace-pre-wrap text-xs bg-gray-800 text-white p-4 rounded-md overflow-auto max-h-60">
-                        {debugInfo}
-                      </pre>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <h4 className="text-md font-medium text-gray-800">環境情報</h4>
+                          <pre className="whitespace-pre-wrap text-xs bg-gray-800 text-white p-2 rounded-md overflow-auto max-h-40">
+                            URL: {typeof window !== 'undefined' ? window.location.href : ''}
+                            ユーザーエージェント: {typeof navigator !== 'undefined' ? navigator.userAgent : ''}
+                            画面サイズ: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : ''}
+                          </pre>
+                        </div>
+                        <div>
+                          <h4 className="text-md font-medium text-gray-800">処理ログ</h4>
+                          <pre className="whitespace-pre-wrap text-xs bg-gray-800 text-white p-2 rounded-md overflow-auto max-h-40">
+                            {debugInfo}
+                          </pre>
+                        </div>
+                      </div>
+                      <h4 className="text-md font-medium text-gray-800">トラブルシューティング</h4>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <button
+                          onClick={() => {
+                            addDebugInfo('手動リロード実行');
+                            window.location.reload();
+                          }}
+                          className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md"
+                        >
+                          ページをリロード
+                        </button>
+                        <button
+                          onClick={() => {
+                            const url = '/api/furigana?test=1';
+                            addDebugInfo(`シンプルAPIリクエスト: ${url}`);
+                            window.open(url, '_blank');
+                          }}
+                          className="px-3 py-1 bg-green-600 text-white text-sm rounded-md"
+                        >
+                          APIエンドポイントを開く
+                        </button>
+                      </div>
                     </div>
                   )}
                   
