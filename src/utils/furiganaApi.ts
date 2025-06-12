@@ -77,29 +77,39 @@ export const requestFurigana = async (
   grade: GradeLevel
 ): Promise<FuriganaResponse> => {
   try {
-    const response = await axios.post<FuriganaResponse | { error: string }>(
-      '/api/furigana',
-      {
+    console.log(`Sending request to API endpoint with text length: ${text.length}, grade: ${grade}`);
+    
+    // fetch APIを使用
+    const response = await fetch('/api/furigana', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         text,
         clientId,
         grade
-      }
-    );
-
-    const data = response.data;
+      })
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API Error Response:', errorText);
+      throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const data = await response.json();
     
     // エラーレスポンスの場合
     if ('error' in data) {
+      console.error('API returned error:', data.error);
       throw new Error(`API Error: ${data.error}`);
     }
     
     return data as FuriganaResponse;
   } catch (error: any) {
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.error || error.message;
-      throw new Error(`Network Error: ${errorMessage}`);
-    }
-    throw error;
+    console.error('Error in requestFurigana:', error);
+    throw new Error(`API Request Failed: ${error.message}`);
   }
 };
 

@@ -25,39 +25,56 @@ export class FuriganaProcessor {
     this.grade = grade;
     this.rubyStyle = rubyStyle;
     this.skipInfo = {};
+    
+    console.log(`FuriganaProcessor initialized with: grade=${grade}, skipLength=${skipLength}, rubyStyle=${rubyStyle}`);
   }
 
   // ルビを適用する処理
   public async process(text: string): Promise<string> {
+    console.log(`Processing text of length ${text.length}`);
+    
     // テキストを4KB以内のチャンクに分割
     const chunks = splitTextIntoChunks(text);
+    console.log(`Text split into ${chunks.length} chunks`);
+    
     let result = '';
     
     // 各チャンクを処理
-    for (const chunk of chunks) {
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      console.log(`Processing chunk ${i+1}/${chunks.length} (length: ${chunk.length})`);
+      
       // チャンクに改頁マークが含まれている場合、スキップ情報をリセット
       if (chunk.includes('｛改頁｝')) {
+        console.log(`Chunk ${i+1} contains page break, resetting skip info`);
         const parts = chunk.split('｛改頁｝');
-        for (let i = 0; i < parts.length; i++) {
-          const part = parts[i];
+        for (let j = 0; j < parts.length; j++) {
+          const part = parts[j];
           if (part) {
             const processedPart = await this.processChunk(part);
             result += processedPart;
           }
           
           // 改頁マークを追加（最後のパートを除く）
-          if (i < parts.length - 1) {
+          if (j < parts.length - 1) {
             result += '｛改頁｝';
             this.skipInfo = {}; // スキップ情報をリセット
           }
         }
       } else {
         // 通常のチャンクを処理
-        const processedChunk = await this.processChunk(chunk);
-        result += processedChunk;
+        try {
+          const processedChunk = await this.processChunk(chunk);
+          result += processedChunk;
+        } catch (error) {
+          console.error(`Error processing chunk ${i+1}:`, error);
+          // エラーが発生しても処理を継続し、元のテキストを使用
+          result += chunk;
+        }
       }
     }
     
+    console.log(`Text processing complete, result length: ${result.length}`);
     return result;
   }
 
@@ -65,14 +82,18 @@ export class FuriganaProcessor {
   private async processChunk(chunk: string): Promise<string> {
     try {
       // APIリクエストを送信
+      console.log(`Sending API request for chunk of length ${chunk.length}`);
+      
       const response = await requestFurigana(chunk, this.clientId, this.grade);
+      
+      console.log(`API response received, word count: ${response.result.word.length}`);
       
       // レスポンスからルビを適用
       return this.applyRubyFromResponse(response, chunk);
-    } catch (error) {
+    } catch (error: any) {
       // エラーが発生した場合は元のテキストを返す
       console.error('Failed to process chunk:', error);
-      return chunk;
+      throw new Error(`Chunk processing failed: ${error.message}`);
     }
   }
 
@@ -82,12 +103,19 @@ export class FuriganaProcessor {
     let result = '';
     let currentPos = 0;
     
+    console.log(`Applying ruby to ${words.length} words`);
+    
     for (const word of words) {
       // 単語にルビを適用
       const processedWord = this.applyRubyToWord(word);
       
       // 元のテキスト内の位置を特定し、間のテキストを追加
       const startPos = originalText.indexOf(word.surface, currentPos);
+      if (startPos === -1) {
+        console.warn(`Could not find word '${word.surface}' in original text at position ${currentPos}+`);
+        continue;
+      }
+      
       if (startPos > currentPos) {
         result += originalText.substring(currentPos, startPos);
       }
@@ -120,6 +148,10 @@ export class FuriganaProcessor {
       for (const subword of word.subword) {
         // サブワードの位置を特定
         const startPos = word.surface.indexOf(subword.surface, currentPos);
+        if (startPos === -1) {
+          console.warn(`Could not find subword '${subword.surface}' in word '${word.surface}' at position ${currentPos}+`);
+          continue;
+        }
         
         // 間のテキストを追加
         if (startPos > currentPos) {
