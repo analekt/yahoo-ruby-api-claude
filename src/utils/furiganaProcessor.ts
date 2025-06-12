@@ -6,6 +6,9 @@ import {
 } from './furiganaApi';
 import { FuriganaResponse, GradeLevel, RubyStyle, Word } from '@/types';
 
+// APIアクセスを監視するフラグ
+const DEBUG_API_CALLS = true;
+
 // 既に処理した漢字とその漢字をスキップする残り文字数を管理する型
 interface SkipInfo {
   [kanji: string]: number;
@@ -27,11 +30,16 @@ export class FuriganaProcessor {
     this.skipInfo = {};
     
     console.log(`FuriganaProcessor initialized with: grade=${grade}, skipLength=${skipLength}, rubyStyle=${rubyStyle}`);
+    console.log(`ClientID: ${clientId.substring(0, 3)}***${clientId.substring(clientId.length - 3)}`);
   }
 
   // ルビを適用する処理
   public async process(text: string): Promise<string> {
     console.log(`Processing text of length ${text.length}`);
+    
+    if (DEBUG_API_CALLS) {
+      console.log('API access mode: Server-side API endpoint');
+    }
     
     // テキストを4KB以内のチャンクに分割
     const chunks = splitTextIntoChunks(text);
@@ -51,8 +59,13 @@ export class FuriganaProcessor {
         for (let j = 0; j < parts.length; j++) {
           const part = parts[j];
           if (part) {
-            const processedPart = await this.processChunk(part);
-            result += processedPart;
+            try {
+              const processedPart = await this.processChunk(part);
+              result += processedPart;
+            } catch (error) {
+              console.error(`Error processing part ${j+1} of chunk ${i+1}:`, error);
+              result += part; // エラー時は元のテキストを使用
+            }
           }
           
           // 改頁マークを追加（最後のパートを除く）
@@ -80,10 +93,42 @@ export class FuriganaProcessor {
 
   // 個々のチャンクを処理する内部メソッド
   private async processChunk(chunk: string): Promise<string> {
+    if (chunk.trim().length === 0) {
+      console.log('Skipping empty chunk');
+      return chunk;
+    }
+
     try {
       // APIリクエストを送信
       console.log(`Sending API request for chunk of length ${chunk.length}`);
       
+      // シンプルなリクエストでAPIをテスト
+      let testResult = null;
+      try {
+        console.log('Testing API with simple request...');
+        const response = await fetch('/api/furigana', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: '漢字',
+            clientId: this.clientId,
+            grade: this.grade
+          })
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API test failed:', response.status, errorText);
+        } else {
+          testResult = await response.json();
+          console.log('API test successful:', testResult);
+        }
+      } catch (testError) {
+        console.error('API test error:', testError);
+      }
+      
+      // メインのAPIリクエスト
+      console.log('Sending main API request');
       const response = await requestFurigana(chunk, this.clientId, this.grade);
       
       console.log(`API response received, word count: ${response.result.word.length}`);
