@@ -191,7 +191,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>ルビ振りツール</title>
+        <title>📖ルビ振りツール</title>
         <meta name="description" content="Yahoo!デベロッパーネットワークのAPIを使ったルビ振りツール" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -203,7 +203,7 @@ export default function Home() {
             <div className="max-w-6xl mx-auto">
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">ルビ振りツール</h1>
+                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">📖ルビ振りツール</h1>
                   
                   {/* 入力設定 */}
                   <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -404,7 +404,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="text-center text-gray-500 text-sm mt-8">
-          <p><a href="https://developer.yahoo.co.jp/webapi/jlp/furigana/v2/furigana.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Yahoo!デベロッパーネットワークのルビ振りAPI</a>を使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
+          <p>このプログラムは<a href="https://analekt/github.io" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">analekt</a>が考案し、Claude 3.7 Sonnetが記述したものです。<a href="https://developer.yahoo.co.jp/webapi/jlp/furigana/v2/furigana.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Yahoo!デベロッパーネットワークのルビ振りAPI</a>を使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
         </footer>
       </div>
       <ToastContainer position="bottom-right" />
