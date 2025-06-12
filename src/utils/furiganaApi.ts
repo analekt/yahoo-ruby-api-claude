@@ -128,7 +128,7 @@ export function applyInkBracketRuby(surface: string, furigana: string): string {
   const kanjiPart = kanjiMatches[0];
   const nonKanjiPart = surface.replace(kanjiPart, '');
   
-  return `${kanjiPart}《${furigana}》${nonKanjiPart}`;
+  return `${kanjiPart}【${furigana}】${nonKanjiPart}`;
 }
 
 /**
