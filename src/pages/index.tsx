@@ -404,7 +404,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="text-center text-gray-500 text-sm mt-8">
-          <p>Yahoo!デベロッパーネットワークのルビ振りAPIを使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
+          <p><a href="https://developer.yahoo.co.jp/webapi/jlp/furigana/v2/furigana.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Yahoo!デベロッパーネットワークのルビ振りAPI</a>を使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
         </footer>
       </div>
       <ToastContainer position="bottom-right" />
