@@ -115,7 +115,20 @@ export function splitTextIntoChunks(text: string, maxLength: number = 4000): str
  * @returns ルビが適用されたテキスト
  */
 export function applyInkBracketRuby(surface: string, furigana: string): string {
-  return `${surface}《${furigana}》`;
+  // 漢字部分を特定
+  const kanjiPattern = /[\u4e00-\u9faf]+/g;
+  const kanjiMatches = surface.match(kanjiPattern);
+  
+  // 漢字がない場合はそのまま返す
+  if (!kanjiMatches) {
+    return surface;
+  }
+  
+  // 漢字部分だけにルビを適用
+  const kanjiPart = kanjiMatches[0];
+  const nonKanjiPart = surface.replace(kanjiPart, '');
+  
+  return `${kanjiPart}《${furigana}》${nonKanjiPart}`;
 }
 
 /**
@@ -126,5 +139,18 @@ export function applyInkBracketRuby(surface: string, furigana: string): string {
  * @returns ルビが適用されたテキスト
  */
 export function applyXhtmlRuby(surface: string, furigana: string): string {
-  return `<ruby>${surface}<rt>${furigana}</rt></ruby>`;
+  // 漢字部分を特定
+  const kanjiPattern = /[\u4e00-\u9faf]+/g;
+  const kanjiMatches = surface.match(kanjiPattern);
+  
+  // 漢字がない場合はそのまま返す
+  if (!kanjiMatches) {
+    return surface;
+  }
+  
+  // 漢字部分だけにルビを適用
+  const kanjiPart = kanjiMatches[0];
+  const nonKanjiPart = surface.replace(kanjiPart, '');
+  
+  return `<ruby>${kanjiPart}<rt>${furigana}</rt></ruby>${nonKanjiPart}`;
 } 
