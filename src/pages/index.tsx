@@ -25,9 +25,9 @@ function getApiUrl(path: string): string {
 export default function Home() {
   // 設定と状態の管理
   const [clientId, setClientId] = useState<string>('');
-  const [skipLength, setSkipLength] = useState<number>(100);
+  const [skipLength, setSkipLength] = useState<number>(6080);
   const [rubyStyle, setRubyStyle] = useState<RubyStyle>('墨つき括弧');
-  const [grade, setGrade] = useState<GradeLevel>('1');
+  const [grade, setGrade] = useState<GradeLevel>('8');
   const [inputText, setInputText] = useState<string>('');
   const [outputText, setOutputText] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -243,7 +243,7 @@ export default function Home() {
                         value={skipLength}
                         onChange={(e) => setSkipLength(parseInt(e.target.value))}
                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="100"
+                        placeholder="6080"
                       />
                       <p className="mt-1 text-sm text-gray-500">
                         一度ルビを付与した漢字が、続く設定文字数内で再登場した場合、ルビを付与しません。「｛改頁｝」という文字列が現れると、スキップカウントはリセットされます。
