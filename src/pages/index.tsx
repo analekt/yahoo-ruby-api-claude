@@ -191,7 +191,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>📖Rubify　かんたんルビふりツール</title>
+        <title>📖Rubify　かんたんルビふりツールβ</title>
         <meta name="description" content="Yahoo!デベロッパーネットワークのAPIを使ったルビ振りツール" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -203,7 +203,7 @@ export default function Home() {
             <div className="max-w-6xl mx-auto">
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">📖Rubify　かんたんルビふりツール</h1>
+                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">📖Rubify　かんたんルビふりツールβ</h1>
                   
                   {/* 入力設定 */}
                   <div className="bg-gray-50 p-4 rounded-lg mb-6">
