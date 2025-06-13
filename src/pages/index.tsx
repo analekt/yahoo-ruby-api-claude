@@ -402,7 +402,7 @@ export default function Home() {
           </div>
         </div>
         <footer className="text-center text-gray-500 text-sm mt-8">
-          <p>このプログラムは<a href="https://analekt.github.io" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">analekt</a>が考案し、Claude 3.7 Sonnetが記述したものです。<a href="https://developer.yahoo.co.jp/webapi/jlp/furigana/v2/furigana.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Yahoo!デベロッパーネットワークのルビ振りAPI</a>を使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
+          <p>このプログラムはClaude 3.7 Sonnetが記述したものです。<a href="https://developer.yahoo.co.jp/webapi/jlp/furigana/v2/furigana.html" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Yahoo!デベロッパーネットワークのルビ振りAPI</a>を使用しています。詳しくは<a href="https://github.com/analekt/yahoo-ruby-api-claude" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">こちら</a>をご覧ください。</p>
         </footer>
       </div>
       <ToastContainer position="bottom-right" />
