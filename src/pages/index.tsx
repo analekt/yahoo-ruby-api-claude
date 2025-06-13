@@ -209,7 +209,7 @@ export default function Home() {
                   <div className="bg-gray-50 p-4 rounded-lg mb-6">
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Client ID (Yahoo!デベロッパーネットワークで取得できます)
+                        Client ID（Yahoo!デベロッパーネットワークで取得できます）
                       </label>
                       <input
                         type="text"
@@ -280,8 +280,8 @@ export default function Home() {
                           className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                           aria-label="ルビのスタイルの選択"
                         >
-                          <option value="墨つき括弧">墨つき括弧 (例: 漢字【かん】字【じ】)</option>
-                          <option value="XHTML">XHTML (例: &lt;ruby&gt;漢字&lt;rt&gt;かんじ&lt;/rt&gt;&lt;/ruby&gt;)</option>
+                          <option value="墨つき括弧">墨つき括弧（例: 漢字【かん】字【じ】）</option>
+                          <option value="XHTML">XHTML（例: &lt;ruby&gt;漢字&lt;rt&gt;かんじ&lt;/rt&gt;&lt;/ruby&gt;）</option>
                         </select>
                       </div>
                     </div>
