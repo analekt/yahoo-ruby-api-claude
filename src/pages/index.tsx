@@ -191,7 +191,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>📖ルビ振りツール</title>
+        <title>📖Rubify　かんたんルビふりツール</title>
         <meta name="description" content="Yahoo!デベロッパーネットワークのAPIを使ったルビ振りツール" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -203,15 +203,13 @@ export default function Home() {
             <div className="max-w-6xl mx-auto">
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">📖ルビ振りツール</h1>
+                  <h1 className="text-3xl font-extrabold text-center text-indigo-600 mb-8">📖Rubify　かんたんルビふりツール</h1>
                   
                   {/* 入力設定 */}
                   <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                    <h2 className="text-xl font-bold mb-4 text-gray-800">入力設定</h2>
-                    
                     <div className="mb-4">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Client ID (アプリケーションID)
+                        Client ID (Yahoo!デベロッパーネットワークで取得できます)
                       </label>
                       <input
                         type="text"
@@ -282,7 +280,7 @@ export default function Home() {
                           className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                           aria-label="ルビのスタイルの選択"
                         >
-                          <option value="墨つき括弧">墨つき括弧 (例: 漢字【かん】字)</option>
+                          <option value="墨つき括弧">墨つき括弧 (例: 漢字【かん】字【じ】)</option>
                           <option value="XHTML">XHTML (例: &lt;ruby&gt;漢字&lt;rt&gt;かんじ&lt;/rt&gt;&lt;/ruby&gt;)</option>
                         </select>
                       </div>
